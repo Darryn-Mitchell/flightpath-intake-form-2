@@ -2,16 +2,77 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Section - FlightPath</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Strategic direction</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page section-page">
-      <div class="section-card">
-        <h1>Section In Progress</h1>
-        <p>This section is being configured.</p>
-        <button onclick="window.close()" class="primary-btn">Close</button>
+    <main class="page wizard-page">
+      <div class="wizard-card">
+        <header class="wizard-header">
+          <p class="section-label">Customer Strategic direction</p>
+          <p id="customer-name" class="customer-name"></p>
+        </header>
+
+        <div id="pane-1" class="question-pane active" data-step="1">
+          <p class="step-label">Question 1 of 2</p>
+          <h1 class="question-title">
+            Does the account team understand the customers strategic technology
+            direction?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="1" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="1" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="pane-2" class="question-pane" data-step="2">
+          <p class="step-label">Question 2 of 2</p>
+          <h1 class="question-title">
+            Can we obtain information about the customers strategic direction for
+            the current and forthcoming year? (Not AI generated)
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="2" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="2" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="complete-pane" class="question-pane">
+          <p class="step-label">Section complete</p>
+          <h1 class="question-title">Customer Strategic direction complete</h1>
+          <p class="result-text">
+            Score recorded: <strong id="final-score"></strong>
+          </p>
+          <p id="status-message" class="form-message" role="status"></p>
+        </div>
+
+        <div id="error-pane" class="question-pane">
+          <h1 class="question-title">Unable to load assessment</h1>
+          <p id="error-message" class="form-message error"></p>
+        </div>
       </div>
     </main>
+
+    <iframe
+      id="submit-frame"
+      name="submit-frame"
+      class="hidden"
+      title="Form submission"
+    ></iframe>
+    <form id="sheet-submit-form" method="POST" target="submit-frame" class="hidden"></form>
+
+    <script src="config.js"></script>
+    <script src="sections.js"></script>
+    <script src="sheet.js"></script>
+    <script src="customer-strategic-direction.js"></script>
   </body>
 </html>

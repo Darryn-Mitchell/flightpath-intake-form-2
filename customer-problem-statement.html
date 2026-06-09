@@ -2,16 +2,93 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Section - FlightPath</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer problem statement</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page section-page">
-      <div class="section-card">
-        <h1>Section In Progress</h1>
-        <p>This section is being configured.</p>
-        <button onclick="window.close()" class="primary-btn">Close</button>
+    <main class="page wizard-page">
+      <div class="wizard-card">
+        <header class="wizard-header">
+          <p class="section-label">Customer problem statement</p>
+          <p id="customer-name" class="customer-name"></p>
+        </header>
+
+        <div id="pane-1" class="question-pane active" data-step="1">
+          <p class="step-label">Question 1 of 3</p>
+          <h1 class="question-title">
+            Does the Customer have a clearly defined problem or opportunity
+            statement, articulated by a senior stakeholder?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="1" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="1" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="pane-2" class="question-pane" data-step="2">
+          <p class="step-label">Question 2 of 3</p>
+          <h1 class="question-title">
+            Does the customer have a known problem or opportunity statement that
+            has been cascaded down from senior leaders?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="2" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="2" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="pane-3" class="question-pane" data-step="3">
+          <p class="step-label">Question 3 of 3</p>
+          <h1 class="question-title">
+            Has anyone at Red Hat heard what could be a problem or opportunity
+            statement within the customer that requires validation?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="3" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="3" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="complete-pane" class="question-pane">
+          <p class="step-label">Section complete</p>
+          <h1 class="question-title">Customer problem statement complete</h1>
+          <p class="result-text">
+            Score recorded: <strong id="final-score"></strong>
+          </p>
+          <p id="status-message" class="form-message" role="status"></p>
+        </div>
+
+        <div id="error-pane" class="question-pane">
+          <h1 class="question-title">Unable to load assessment</h1>
+          <p id="error-message" class="form-message error"></p>
+        </div>
       </div>
     </main>
+
+    <iframe
+      id="submit-frame"
+      name="submit-frame"
+      class="hidden"
+      title="Form submission"
+    ></iframe>
+    <form id="sheet-submit-form" method="POST" target="submit-frame" class="hidden"></form>
+
+    <script src="config.js"></script>
+    <script src="sections.js"></script>
+    <script src="sheet.js"></script>
+    <script src="customer-problem-statement.js"></script>
   </body>
 </html>
