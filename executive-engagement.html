@@ -3,92 +3,92 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Executive Engagement - FlightPath Assessment</title>
+    <title>Executive Engagement</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page section-page">
-      <div class="section-card">
-        <header class="section-header">
-          <h1>Executive Engagement</h1>
+    <main class="page wizard-page">
+      <div class="wizard-card">
+        <header class="wizard-header">
+          <p class="section-label">Executive Engagement</p>
           <p id="customer-name" class="customer-name"></p>
         </header>
 
-        <form id="section-form">
-          <div class="field">
-            <label for="engagement-level">
-              What level of executive engagement does this customer have?
-            </label>
-            <select id="engagement-level" name="selectedValue" required>
-              <option value="" disabled selected>Select engagement level</option>
-              <option value="C-level engagement" data-score="5">C-level engagement (5 points)</option>
-              <option value="VP-level engagement" data-score="3">VP-level engagement (3 points)</option>
-              <option value="Director-level engagement" data-score="2">Director-level engagement (2 points)</option>
-              <option value="Manager-level engagement" data-score="1">Manager-level engagement (1 point)</option>
-              <option value="No executive engagement" data-score="0">No executive engagement (0 points)</option>
-            </select>
-          </div>
-
-          <p id="form-message" class="form-message" role="status"></p>
-
-          <div class="actions">
-            <button type="submit" id="submit-btn" class="primary-btn">
-              Continue
+        <div id="pane-1" class="question-pane active" data-step="1">
+          <p class="step-label">Question 1 of 3</p>
+          <h1 class="question-title">
+            Does the account team have a relationship with the C-level or the C-1
+            level, with regular contact?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="1" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="1" data-answer="no">
+              No
             </button>
           </div>
-        </form>
+        </div>
+
+        <div id="pane-2" class="question-pane" data-step="2">
+          <p class="step-label">Question 2 of 3</p>
+          <h1 class="question-title">
+            Does the account team have a relationship with C-2 or C-3, with regular
+            contact?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="2" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="2" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="pane-3" class="question-pane" data-step="3">
+          <p class="step-label">Question 3 of 3</p>
+          <h1 class="question-title">
+            Does the account team have a relationship / champion within the customer
+            that could elevate us to the C-2 or C-1 level?
+          </h1>
+          <div class="yes-no-actions">
+            <button type="button" class="primary-btn" data-question="3" data-answer="yes">
+              Yes
+            </button>
+            <button type="button" class="secondary-btn" data-question="3" data-answer="no">
+              No
+            </button>
+          </div>
+        </div>
+
+        <div id="complete-pane" class="question-pane">
+          <p class="step-label">Section complete</p>
+          <h1 class="question-title">Executive Engagement complete</h1>
+          <p class="result-text">
+            Score recorded: <strong id="final-score"></strong>
+          </p>
+          <p id="status-message" class="form-message" role="status"></p>
+        </div>
+
+        <div id="error-pane" class="question-pane">
+          <h1 class="question-title">Unable to load assessment</h1>
+          <p id="error-message" class="form-message error"></p>
+        </div>
       </div>
     </main>
+
+    <iframe
+      id="submit-frame"
+      name="submit-frame"
+      class="hidden"
+      title="Form submission"
+    ></iframe>
+    <form id="sheet-submit-form" method="POST" target="submit-frame" class="hidden"></form>
 
     <script src="config.js"></script>
     <script src="sections.js"></script>
     <script src="sheet.js"></script>
-    <script>
-      // Get URL parameters
-      const params = new URLSearchParams(window.location.search);
-      const salesforceName = params.get('salesforceName');
-      const submissionId = params.get('submissionId');
-
-      // Display customer name
-      document.getElementById('customer-name').textContent = salesforceName || '';
-
-      // Handle form submission
-      const form = document.getElementById('section-form');
-      const submitBtn = document.getElementById('submit-btn');
-      const messageEl = document.getElementById('form-message');
-
-      form.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const selectEl = document.getElementById('engagement-level');
-        const selectedOption = selectEl.options[selectEl.selectedIndex];
-        const score = parseInt(selectedOption.dataset.score);
-        const selectedValue = selectedOption.value;
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Saving...';
-        messageEl.textContent = '';
-
-        try {
-          await submitSectionSelection({
-            type: 'executiveEngagement',
-            submissionId,
-            selectedValue,
-            score
-          });
-
-          messageEl.textContent = 'Saved!';
-          messageEl.className = 'form-message success';
-
-          // Mark section complete and proceed to next
-          finishSectionWindow('executiveEngagement', score);
-        } catch (error) {
-          messageEl.textContent = error.message || 'Failed to save. Please try again.';
-          messageEl.className = 'form-message error';
-          submitBtn.disabled = false;
-          submitBtn.textContent = 'Continue';
-        }
-      });
-    </script>
+    <script src="executive-engagement.js"></script>
   </body>
 </html>
