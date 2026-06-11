@@ -54,6 +54,9 @@ const SCORING_SECTION_IDS = [
 const STORAGE_KEY = "flightpath-active-submission";
 const STATUS_CHANNEL = "flightpath-status";
 
+// In-memory session while localStorage is disabled
+let inMemorySession = null;
+
 function createEmptySectionStatus() {
   return SECTIONS.reduce((sections, section) => {
     sections[section.id] = false;
@@ -69,6 +72,11 @@ function createEmptyScores() {
 }
 
 function getActiveSubmission() {
+  // Return in-memory session while localStorage is disabled
+  if (inMemorySession) {
+    return inMemorySession;
+  }
+
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) {
     return null;
@@ -82,9 +90,12 @@ function getActiveSubmission() {
 }
 
 function setActiveSubmission(session) {
-  // DISABLED: No storage while form is being updated
+  // Store in memory while localStorage is disabled
+  inMemorySession = session;
+  console.log("Storage disabled - session stored in memory:", session);
+
+  // DISABLED: No localStorage while form is being updated
   // localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-  console.log("Storage disabled - session not saved:", session);
 }
 
 function resetActiveSubmission() {

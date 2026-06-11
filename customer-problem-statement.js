@@ -30,6 +30,14 @@ function setStatus(text, type) {
 }
 
 const answers = {};
+let problemStatementText = "";
+let currentScore = 0;
+
+function showProblemStatementPane(score) {
+  currentScore = score;
+  showPane("problem-statement-pane");
+  document.getElementById("problem-statement-text").focus();
+}
 
 async function finishSection(score, answers) {
   document.querySelectorAll(".yes-no-actions button").forEach((button) => {
@@ -45,6 +53,7 @@ async function finishSection(score, answers) {
       type: SECTION_TYPE,
       score,
       answers,
+      problemStatement: problemStatementText,
     };
 
     setStatus("Saved. Continuing...", "success");
@@ -66,7 +75,8 @@ function handleAnswer(question, answer) {
 
   if (question === 1) {
     if (isYes) {
-      finishSection(SCORES["1-yes"], answers);
+      // Show problem statement input for "yes" answer
+      showProblemStatementPane(SCORES["1-yes"]);
       return;
     }
     showPane("pane-2");
@@ -75,7 +85,8 @@ function handleAnswer(question, answer) {
 
   if (question === 2) {
     if (isYes) {
-      finishSection(SCORES["2-yes"], answers);
+      // Show problem statement input for "yes" answer
+      showProblemStatementPane(SCORES["2-yes"]);
       return;
     }
     showPane("pane-3");
@@ -83,7 +94,13 @@ function handleAnswer(question, answer) {
   }
 
   if (question === 3) {
-    finishSection(isYes ? SCORES["3-yes"] : SCORES["3-no"], answers);
+    if (isYes) {
+      // Show problem statement input for "yes" answer
+      showProblemStatementPane(SCORES["3-yes"]);
+      return;
+    }
+    // No answer - finish with 0 score
+    finishSection(SCORES["3-no"], answers);
   }
 }
 
@@ -101,6 +118,31 @@ function init() {
     button.addEventListener("click", () => {
       handleAnswer(Number(button.dataset.question), button.dataset.answer);
     });
+  });
+
+  // Handle problem statement form
+  const problemForm = document.getElementById("problem-statement-form");
+  const problemTextarea = document.getElementById("problem-statement-text");
+  const charCount = document.getElementById("char-count");
+
+  // Update character count
+  problemTextarea.addEventListener("input", () => {
+    charCount.textContent = problemTextarea.value.length;
+  });
+
+  // Handle form submission
+  problemForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    problemStatementText = problemTextarea.value.trim();
+
+    if (!problemStatementText) {
+      document.getElementById("problem-statement-message").textContent = "Please enter a problem statement.";
+      document.getElementById("problem-statement-message").className = "form-message error";
+      return;
+    }
+
+    // Continue with the score that was set
+    finishSection(currentScore, answers);
   });
 }
 
