@@ -26,16 +26,46 @@
           <ul id="section-status-list" class="section-status-list"></ul>
         </section>
 
-        <section
-          id="recommendation-panel"
-          class="recommendation-panel hidden"
-          aria-labelledby="recommendation-title"
-        >
-          <h2 id="recommendation-title">Recommendation</h2>
-          <p id="flightpath-recommendation" class="flightpath-recommendation"></p>
-        </section>
       </div>
     </main>
+
+    <div id="recommendation-overlay" class="overlay hidden" aria-hidden="true">
+      <div
+        class="modal modal-large"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recommendation-modal-title"
+      >
+        <header class="modal-header">
+          <h1 id="recommendation-modal-title">Assessment Complete</h1>
+          <button
+            type="button"
+            id="close-recommendation-btn"
+            class="icon-btn"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="modal-content">
+          <div id="recommendation-content">
+            <h2>FlightPath Recommendation</h2>
+            <p id="recommendation-text" class="recommendation-result"></p>
+
+            <h3>Assessment Results</h3>
+            <div id="results-summary">
+              <p><strong>Customer:</strong> <span id="result-customer"></span></p>
+              <p><strong>Total Score:</strong> <span id="result-score"></span></p>
+            </div>
+
+            <h3>Next Steps</h3>
+            <div id="next-steps-content">
+              <p>Next steps will be displayed here based on your recommendation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div id="form-overlay" class="overlay hidden" aria-hidden="true">
       <div

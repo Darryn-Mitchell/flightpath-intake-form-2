@@ -1,11 +1,8 @@
-function renderRecommendation(session) {
-  const panelEl = document.getElementById("recommendation-panel");
-  const recommendationEl = document.getElementById("flightpath-recommendation");
-
-  if (!session || !isAssessmentComplete(session)) {
-    panelEl.classList.add("hidden");
-    return;
-  }
+function showRecommendationModal(session) {
+  const overlay = document.getElementById("recommendation-overlay");
+  const recommendationText = document.getElementById("recommendation-text");
+  const resultCustomer = document.getElementById("result-customer");
+  const resultScore = document.getElementById("result-score");
 
   const totalScore =
     session.totalScore !== null && session.totalScore !== undefined
@@ -14,11 +11,32 @@ function renderRecommendation(session) {
   const recommendation =
     session.recommendation || getFlightPathRecommendation(totalScore);
 
-  panelEl.classList.remove("hidden");
-  recommendationEl.textContent = recommendation.text;
-  recommendationEl.className = `flightpath-recommendation ${recommendation.level}`;
+  // Populate modal content
+  recommendationText.textContent = recommendation.text;
+  recommendationText.className = `recommendation-result ${recommendation.level}`;
+  resultCustomer.textContent = session.salesforceName;
+  resultScore.textContent = totalScore;
+
+  // Show the modal
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
 
   maybeSaveFinalTally(session);
+}
+
+function closeRecommendationModal() {
+  const overlay = document.getElementById("recommendation-overlay");
+  overlay.classList.add("hidden");
+  overlay.setAttribute("aria-hidden", "true");
+}
+
+function renderRecommendation(session) {
+  if (!session || !isAssessmentComplete(session)) {
+    return;
+  }
+
+  // Show modal instead of inline recommendation
+  showRecommendationModal(session);
 }
 
 function renderSectionStatus() {
@@ -214,12 +232,30 @@ if (sectionOverlay) {
   });
 }
 
+// Recommendation modal close button
+const closeRecommendationBtn = document.getElementById("close-recommendation-btn");
+const recommendationOverlay = document.getElementById("recommendation-overlay");
+
+if (closeRecommendationBtn) {
+  closeRecommendationBtn.addEventListener("click", closeRecommendationModal);
+}
+
+if (recommendationOverlay) {
+  recommendationOverlay.addEventListener("click", (event) => {
+    if (event.target === recommendationOverlay) {
+      closeRecommendationModal();
+    }
+  });
+}
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     if (!overlay.classList.contains("hidden")) {
       closeForm();
     } else if (!sectionOverlay.classList.contains("hidden")) {
       closeSectionModal();
+    } else if (!recommendationOverlay.classList.contains("hidden")) {
+      closeRecommendationModal();
     }
   }
 });

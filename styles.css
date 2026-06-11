@@ -476,3 +476,62 @@ body {
   background: #fee2e2;
   border: 1px solid #fca5a5;
 }
+
+/* Recommendation Modal */
+#recommendation-content h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  color: var(--text);
+}
+
+#recommendation-content h3 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.recommendation-result {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border-radius: 10px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.recommendation-result.good {
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+}
+
+.recommendation-result.okay {
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+}
+
+.recommendation-result.not-fit {
+  color: #991b1b;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+}
+
+#results-summary {
+  background: var(--bg);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+#results-summary p {
+  margin: 0.5rem 0;
+}
+
+#next-steps-content {
+  background: #eff6ff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #93c5fd;
+}
