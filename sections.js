@@ -82,7 +82,9 @@ function getActiveSubmission() {
 }
 
 function setActiveSubmission(session) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  // DISABLED: No storage while form is being updated
+  // localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+  console.log("Storage disabled - session not saved:", session);
 }
 
 function resetActiveSubmission() {

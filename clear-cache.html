@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Cache Test</title>
+</head>
+<body>
+    <h1>Cache Clear Test Page</h1>
+    <p>Current time: <span id="time"></span></p>
+    <p>If you see a timestamp from more than a few seconds ago, your browser is caching.</p>
+    <script>
+        document.getElementById('time').textContent = new Date().toISOString();
+        console.log('Page loaded at:', new Date().toISOString());
+    </script>
+</body>
+</html>

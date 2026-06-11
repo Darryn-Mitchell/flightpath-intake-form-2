@@ -150,6 +150,8 @@ async function submitForm(event) {
   submitBtn.textContent = "Starting...";
 
   try {
+    console.log("DEBUG: Starting form submission");
+
     // Save intake data locally - don't submit to backend yet
     createSubmissionSession({
       submissionId,
@@ -163,12 +165,19 @@ async function submitForm(event) {
       },
     });
 
+    console.log("DEBUG: Session created");
+
     renderSectionStatus();
+    console.log("DEBUG: Status rendered");
+
     openExecutiveEngagement({ salesforceName, submissionId });
+    console.log("DEBUG: Opening executive engagement");
+
     form.reset();
     setMessage("Assessment started! Complete all sections to save.", "success");
     setTimeout(closeForm, 2000);
   } catch (error) {
+    console.error("DEBUG: Error caught:", error);
     setMessage(
       error.message || "Something went wrong. Please try again.",
       "error"

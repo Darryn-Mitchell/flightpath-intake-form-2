@@ -57,20 +57,16 @@ async function submitCompleteAssessment(session) {
   const recommendation =
     session.recommendation || getFlightPathRecommendation(totalScore);
 
-  // Build complete payload with all data
-  const payload = {
+  // DISABLED: No backend submission while form is being updated
+  console.log("Backend submission disabled - would have sent:", {
     type: "completeAssessment",
     submissionId: session.submissionId,
     intakeData: session.intakeData,
-    sections: session.sections,
-    scores: session.scores,
-    sectionData: session.sectionData || {},
     totalScore,
     recommendation: recommendation.text,
-    completedAt: new Date().toISOString(),
-  };
+  });
 
-  await submitToBackend(payload);
+  // await submitToBackend(payload);
 
   session.tallySaved = true;
   session.totalScore = totalScore;
