@@ -280,16 +280,16 @@ window.addEventListener("message", (event) => {
       );
 
       if (nextSection) {
-        // Close current modal and open next section
-        closeSectionModal();
+        // Close current modal and open next section (skip confirmation for auto-advance)
+        closeSectionModal(true);
         setTimeout(() => {
           loadSectionInModal(nextSection.id);
         }, 300);
         return;
       }
 
-      // All sections complete - close modal
-      closeSectionModal();
+      // All sections complete - close modal (skip confirmation)
+      closeSectionModal(true);
     }, 1000);
   }
 });

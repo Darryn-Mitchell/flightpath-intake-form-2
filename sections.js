@@ -271,15 +271,17 @@ function openSectionWindow(sectionId) {
   return loadSectionInModal(sectionId);
 }
 
-function closeSectionModal() {
-  // Confirm before closing if assessment is not complete
-  const session = getActiveSubmission();
-  if (session && !isAssessmentComplete(session)) {
-    const confirmed = confirm(
-      "Are you sure you want to close? Your progress in this section will be lost."
-    );
-    if (!confirmed) {
-      return; // Don't close
+function closeSectionModal(skipConfirmation = false) {
+  // Confirm before closing if assessment is not complete (only for manual closes)
+  if (!skipConfirmation) {
+    const session = getActiveSubmission();
+    if (session && !isAssessmentComplete(session)) {
+      const confirmed = confirm(
+        "Are you sure you want to close? Your progress in this section will be lost."
+      );
+      if (!confirmed) {
+        return; // Don't close
+      }
     }
   }
 

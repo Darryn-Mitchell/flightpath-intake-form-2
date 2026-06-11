@@ -329,12 +329,22 @@ def list_all_data():
 @app.route('/')
 def serve_index():
     """Serve the main HTML file"""
-    return send_from_directory('.', 'index.html')
+    response = send_from_directory('.', 'index.html')
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '0'
+    return response
 
 @app.route('/<path:path>')
 def serve_static(path):
     """Serve static files"""
-    return send_from_directory('.', path)
+    response = send_from_directory('.', path)
+    # Disable caching for JS and HTML files during development
+    if path.endswith('.js') or path.endswith('.html'):
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
 if __name__ == '__main__':
     print("Starting FlightPath Form Server...")
