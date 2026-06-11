@@ -11,79 +11,6 @@
       <div class="landing-card">
         <header class="landing-header">
           <h1>FlightPath Intake</h1>
-          <p id="active-customer" class="customer-name hidden"></p>
-        </header>
-
-        <button type="button" id="open-form-btn" class="primary-btn">
-          FlightPath Intake Form
-        </button>
-
-        <section class="status-panel" aria-labelledby="status-title">
-          <h2 id="status-title">Assessment Progress</h2>
-          <p id="status-hint" class="status-hint">
-            Complete the intake form to begin tracking assessment progress.
-          </p>
-          <ul id="section-status-list" class="section-status-list"></ul>
-        </section>
-
-      </div>
-    </main>
-
-    <div id="recommendation-overlay" class="overlay hidden" aria-hidden="true">
-      <div
-        class="modal modal-large"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="recommendation-modal-title"
-      >
-        <header class="modal-header">
-          <h1 id="recommendation-modal-title">Assessment Complete</h1>
-          <button
-            type="button"
-            id="close-recommendation-btn"
-            class="icon-btn"
-            aria-label="Close"
-          >
-            &times;
-          </button>
-        </header>
-        <div class="modal-content">
-          <div id="recommendation-content">
-            <h2>FlightPath Recommendation</h2>
-            <p id="recommendation-text" class="recommendation-result"></p>
-
-            <h3>Assessment Results</h3>
-            <div id="results-summary">
-              <p><strong>Customer:</strong> <span id="result-customer"></span></p>
-              <p><strong>Total Score:</strong> <span id="result-score"></span></p>
-            </div>
-
-            <h3>Next Steps</h3>
-            <div id="next-steps-content">
-              <p>Next steps will be displayed here based on your recommendation.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-overlay" class="overlay hidden" aria-hidden="true">
-      <div
-        class="modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="form-title"
-      >
-        <header class="modal-header">
-          <h1 id="form-title">FlightPath Intake Form</h1>
-          <button
-            type="button"
-            id="close-form-btn"
-            class="icon-btn"
-            aria-label="Close form"
-          >
-            &times;
-          </button>
         </header>
 
         <form id="intake-form" novalidate>
@@ -143,14 +70,58 @@
           <p id="form-message" class="form-message" role="status"></p>
 
           <div class="actions">
-            <button type="button" id="cancel-form-btn" class="secondary-btn">
-              Cancel
-            </button>
             <button type="submit" id="submit-form-btn" class="primary-btn">
-              Submit
+              Begin Assessment
             </button>
           </div>
         </form>
+
+        <section class="status-panel" aria-labelledby="status-title">
+          <h2 id="status-title">Assessment Progress</h2>
+          <p id="status-hint" class="status-hint">
+            Complete the intake form above to begin the assessment.
+          </p>
+          <ul id="section-status-list" class="section-status-list"></ul>
+        </section>
+
+      </div>
+    </main>
+
+    <div id="recommendation-overlay" class="overlay hidden" aria-hidden="true">
+      <div
+        class="modal modal-large"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="recommendation-modal-title"
+      >
+        <header class="modal-header">
+          <h1 id="recommendation-modal-title">Assessment Complete</h1>
+          <button
+            type="button"
+            id="close-recommendation-btn"
+            class="icon-btn"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+        </header>
+        <div class="modal-content">
+          <div id="recommendation-content">
+            <h2>FlightPath Recommendation</h2>
+            <p id="recommendation-text" class="recommendation-result"></p>
+
+            <h3>Assessment Results</h3>
+            <div id="results-summary">
+              <p><strong>Customer:</strong> <span id="result-customer"></span></p>
+              <p><strong>Total Score:</strong> <span id="result-score"></span></p>
+            </div>
+
+            <h3>Next Steps</h3>
+            <div id="next-steps-content">
+              <p>Next steps will be displayed here based on your recommendation.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

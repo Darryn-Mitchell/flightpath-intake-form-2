@@ -4,6 +4,10 @@ function showRecommendationModal(session) {
   const resultCustomer = document.getElementById("result-customer");
   const resultScore = document.getElementById("result-score");
 
+  if (!overlay || !recommendationText || !resultCustomer || !resultScore) {
+    return;
+  }
+
   const totalScore =
     session.totalScore !== null && session.totalScore !== undefined
       ? session.totalScore
@@ -26,6 +30,9 @@ function showRecommendationModal(session) {
 
 function closeRecommendationModal() {
   const overlay = document.getElementById("recommendation-overlay");
+  if (!overlay) {
+    return;
+  }
   overlay.classList.add("hidden");
   overlay.setAttribute("aria-hidden", "true");
 }
@@ -51,7 +58,7 @@ function renderSectionStatus() {
     customerEl.classList.add("hidden");
     customerEl.textContent = "";
     hintEl.textContent =
-      "Complete the intake form to begin tracking assessment progress.";
+      "Complete the intake form above to begin the assessment.";
     renderRecommendation(null);
   } else {
     customerEl.classList.remove("hidden");
@@ -122,25 +129,9 @@ function openExecutiveEngagement({ salesforceName, submissionId }) {
   openSectionWindow("executiveEngagement");
 }
 
-const openBtn = document.getElementById("open-form-btn");
-const closeBtn = document.getElementById("close-form-btn");
-const cancelBtn = document.getElementById("cancel-form-btn");
-const overlay = document.getElementById("form-overlay");
 const form = document.getElementById("intake-form");
 const messageEl = document.getElementById("form-message");
 const submitBtn = document.getElementById("submit-form-btn");
-
-function openForm() {
-  overlay.classList.remove("hidden");
-  overlay.setAttribute("aria-hidden", "false");
-  document.getElementById("salesforce-name").focus();
-}
-
-function closeForm() {
-  overlay.classList.add("hidden");
-  overlay.setAttribute("aria-hidden", "true");
-  clearMessage();
-}
 
 function clearMessage() {
   messageEl.textContent = "";
@@ -194,7 +185,6 @@ async function submitForm(event) {
 
     form.reset();
     setMessage("Assessment started! Complete all sections to save.", "success");
-    setTimeout(closeForm, 2000);
   } catch (error) {
     console.error("DEBUG: Error caught:", error);
     setMessage(
@@ -207,14 +197,6 @@ async function submitForm(event) {
   }
 }
 
-openBtn.addEventListener("click", openForm);
-closeBtn.addEventListener("click", closeForm);
-cancelBtn.addEventListener("click", closeForm);
-overlay.addEventListener("click", (event) => {
-  if (event.target === overlay) {
-    closeForm();
-  }
-});
 form.addEventListener("submit", submitForm);
 
 // Section modal close button
@@ -251,11 +233,9 @@ if (recommendationOverlay) {
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
-    if (!overlay.classList.contains("hidden")) {
-      closeForm();
-    } else if (!sectionOverlay.classList.contains("hidden")) {
+    if (sectionOverlay && !sectionOverlay.classList.contains("hidden")) {
       closeSectionModal();
-    } else if (!recommendationOverlay.classList.contains("hidden")) {
+    } else if (recommendationOverlay && !recommendationOverlay.classList.contains("hidden")) {
       closeRecommendationModal();
     }
   }
