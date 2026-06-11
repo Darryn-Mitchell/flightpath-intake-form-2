@@ -8,14 +8,13 @@ The application collects customer information through an intake form, then guide
 
 ## Features
 
-- Multi-section assessment workflow with auto-progression
+- Multi-section assessment workflow with modal overlays
 - Real-time score calculation and recommendation
-- Cross-window state synchronization using BroadcastChannel API
-- Dual backend support: Python/Smartsheet or Google Apps Script/Sheets
+- Local data storage during assessment completion
+- Email notifications to regional contacts (feature-flagged)
+- Smartsheet integration for final data submission
 
 ## Quick Start
-
-### Python Backend (Smartsheet)
 
 1. Install dependencies:
 ```bash
@@ -23,8 +22,8 @@ pip3 install flask flask-cors requests
 ```
 
 2. Configure Smartsheet credentials in `server.py`:
-   - Set `SMARTSHEET_TOKEN` (line 17)
-   - Set `SMARTSHEET_ID` (line 18)
+   - Set `SMARTSHEET_TOKEN` (line 19)
+   - Set `SMARTSHEET_ID` (line 20)
 
 3. Run the server:
 ```bash
@@ -33,16 +32,10 @@ python3 server.py
 
 4. Open http://localhost:8080
 
-### Google Sheets Backend
-
-See `SETUP-INSTRUCTIONS.txt` for detailed setup with Google Apps Script.
-
 ## Architecture
 
-- **Frontend**: Vanilla JavaScript with localStorage session management
-- **Backend Options**:
-  - Flask server proxying to Smartsheet API
-  - Google Apps Script web app writing to Google Sheets
+- **Frontend**: Vanilla JavaScript with in-memory session management during assessment
+- **Backend**: Flask server with Smartsheet API integration and email notifications
 
 ## Scoring System
 
@@ -53,12 +46,13 @@ See `SETUP-INSTRUCTIONS.txt` for detailed setup with Google Apps Script.
 
 ## Files
 
-- `index.html` - Main intake form
-- `app.js` - Main page controller
-- `sections.js` - Session and scoring logic
+- `index.html` - Main intake form with modal overlays
+- `app.js` - Main page controller and modal management
+- `sections.js` - Session and scoring logic with in-memory storage
 - `sheet.js` - Backend API integration
-- `server.py` - Python/Flask backend
-- `google-apps-script.js` - Alternative Google Sheets backend
+- `server.py` - Python/Flask backend with Smartsheet and email integration
+- `section-utils.js` - Utilities for section pages
+- Section HTML files - Individual assessment sections loaded in modals
 
 ## Security Note
 

@@ -1,6 +1,6 @@
 # Local Data Storage
 
-The FlightPath Intake Form now stores all submissions locally in JSON files while you work on the Google Sheets integration.
+The FlightPath Intake Form stores all submissions locally in JSON files and integrates with Smartsheet for final data storage.
 
 ## How It Works
 
@@ -45,7 +45,7 @@ python3 export_data.py
 ```
 
 This creates timestamped CSV files in the `exports/` directory that you can:
-- Open in Excel or Google Sheets
+- Open in Excel or other spreadsheet applications
 - Import into other systems
 - Archive for records
 
@@ -56,15 +56,14 @@ This creates timestamped CSV files in the `exports/` directory that you can:
 - ✅ All submissions are preserved even if the server restarts
 - ✅ Data files are excluded from git (won't be committed)
 
-## Migration to Google Sheets
+## Data Export
 
-When you're ready to set up Google Sheets:
+To export your data for external use:
 
 1. All your data is in the `data/` directory
 2. Run `python3 export_data.py` to create CSV files
-3. Import the CSV files into Google Sheets
-4. Update `server.py` to point to your Google Sheets backend
-5. Your historical data is preserved!
+3. Import the CSV files into any spreadsheet or database system
+4. Your historical data is preserved!
 
 ## Backup Recommendations
 
