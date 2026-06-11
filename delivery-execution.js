@@ -16,9 +16,9 @@ const RELATIONSHIP_OPTIONS = {
 const SECTION_ID = "deliveryExecution";
 const SECTION_TYPE = "deliveryExecution";
 
-const params = new URLSearchParams(window.location.search);
-const salesforceName = params.get("salesforceName") || "";
-const submissionId = params.get("submissionId") || "";
+const params = getSectionParams();
+const salesforceName = params.salesforceName;
+const submissionId = params.submissionId;
 
 let selectedDelivery = "";
 
@@ -92,21 +92,21 @@ async function handleSubmit() {
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
-  setPaneMessage("Saving to Google Sheets...", "", pane2MessageEl);
+  setPaneMessage("Saving locally...", "", pane2MessageEl);
 
   try {
-    await submitSectionSelection({
+    const sectionData = {
       type: SECTION_TYPE,
-      submissionId,
       selectedValue: selectedDelivery,
       score: relationship.score,
-    });
+      relationship: relationship.label,
+    };
 
     finalDeliveryEl.textContent = selectedDelivery;
     finalScoreEl.textContent = String(relationship.score);
     showPane("complete-pane");
     setPaneMessage("Saved. Continuing...", "success", completeMessageEl);
-    finishSectionWindow(SECTION_ID, relationship.score);
+    finishSectionWindow(SECTION_ID, relationship.score, sectionData);
   } catch (error) {
     setPaneMessage(
       error.message || "Could not save. Please try again.",

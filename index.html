@@ -108,6 +108,35 @@
       </div>
     </div>
 
+    <div id="section-overlay" class="overlay hidden" aria-hidden="true">
+      <div
+        class="modal modal-large"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="section-modal-title"
+      >
+        <header class="modal-header">
+          <h1 id="section-modal-title">Assessment Section</h1>
+          <button
+            type="button"
+            id="close-section-btn"
+            class="icon-btn"
+            aria-label="Close section"
+          >
+            &times;
+          </button>
+        </header>
+        <div id="section-content" class="modal-content">
+          <iframe
+            id="section-frame"
+            name="section-frame"
+            style="width: 100%; height: 600px; border: none;"
+            title="Assessment section"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+
     <iframe
       id="submit-frame"
       name="submit-frame"
@@ -119,6 +148,7 @@
     <script src="config.js"></script>
     <script src="sections.js"></script>
     <script src="sheet.js"></script>
+    <script src="section-utils.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

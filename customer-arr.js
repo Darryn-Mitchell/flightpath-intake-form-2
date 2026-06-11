@@ -9,9 +9,9 @@ const ARR_OPTIONS = {
 const SECTION_ID = "customerArr";
 const SECTION_TYPE = "customerArr";
 
-const params = new URLSearchParams(window.location.search);
-const salesforceName = params.get("salesforceName") || "";
-const submissionId = params.get("submissionId") || "";
+const params = getSectionParams();
+const salesforceName = params.salesforceName;
+const submissionId = params.submissionId;
 
 const customerNameEl = document.getElementById("customer-name");
 const form = document.getElementById("arr-form");
@@ -47,21 +47,20 @@ async function handleSubmit(event) {
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
-  setStatus("Saving to Google Sheets...", "");
+  setStatus("Saving locally...", "");
 
   try {
-    await submitSectionSelection({
+    const sectionData = {
       type: SECTION_TYPE,
-      submissionId,
       selectedValue: option.label,
       score: option.score,
-    });
+    };
 
     finalSelectionEl.textContent = option.label;
     finalScoreEl.textContent = String(option.score);
     showPane("complete-pane");
     setStatus("Saved. Continuing...", "success", completeMessageEl);
-    finishSectionWindow(SECTION_ID, option.score);
+    finishSectionWindow(SECTION_ID, option.score, sectionData);
   } catch (error) {
     setStatus(
       error.message || "Could not save. Please try again.",

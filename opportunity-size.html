@@ -20,6 +20,7 @@
               <label for="opportunity-size">
                 What is the current opportunity size?
               </label>
+              <p class="field-hint">Enter as a whole number (e.g., 800000 not 800k)</p>
               <div class="currency-input">
                 <span class="currency-prefix" aria-hidden="true">$</span>
                 <input
@@ -28,7 +29,7 @@
                   type="text"
                   inputmode="decimal"
                   required
-                  placeholder="insert number here"
+                  placeholder="800000"
                   autocomplete="off"
                 />
               </div>
@@ -71,6 +72,7 @@
     <script src="config.js"></script>
     <script src="sections.js"></script>
     <script src="sheet.js"></script>
+    <script src="section-utils.js"></script>
     <script src="opportunity-size.js"></script>
   </body>
 </html>

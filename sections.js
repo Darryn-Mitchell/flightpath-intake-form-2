@@ -90,12 +90,14 @@ function resetActiveSubmission() {
   broadcastStatusUpdate(null);
 }
 
-function createSubmissionSession({ submissionId, salesforceName }) {
+function createSubmissionSession({ submissionId, salesforceName, intakeData }) {
   const session = {
     submissionId,
     salesforceName,
     sections: createEmptySectionStatus(),
     scores: createEmptyScores(),
+    sectionData: {}, // Store all section responses
+    intakeData: intakeData || null, // Store intake form data
     totalScore: null,
     recommendation: null,
     tallySaved: false,
@@ -147,7 +149,7 @@ function getFlightPathRecommendation(totalScore) {
   };
 }
 
-function markSectionComplete(sectionId, score) {
+function markSectionComplete(sectionId, score, data) {
   const session = getActiveSubmission();
   if (!session || !session.sections || !(sectionId in session.sections)) {
     return null;
@@ -159,6 +161,10 @@ function markSectionComplete(sectionId, score) {
     session.scores = createEmptyScores();
   }
 
+  if (!session.sectionData) {
+    session.sectionData = {};
+  }
+
   if (
     SCORING_SECTION_IDS.includes(sectionId) &&
     score !== undefined &&
@@ -166,6 +172,11 @@ function markSectionComplete(sectionId, score) {
     !Number.isNaN(Number(score))
   ) {
     session.scores[sectionId] = Number(score);
+  }
+
+  // Store section-specific data
+  if (data !== undefined && data !== null) {
+    session.sectionData[sectionId] = data;
   }
 
   if (isAssessmentComplete(session)) {
@@ -212,7 +223,7 @@ function getSectionById(sectionId) {
   return SECTIONS.find((section) => section.id === sectionId) || null;
 }
 
-function openSectionWindow(sectionId) {
+function loadSectionInModal(sectionId) {
   const session = getActiveSubmission();
   const section = getSectionById(sectionId);
 
@@ -220,22 +231,57 @@ function openSectionWindow(sectionId) {
     return false;
   }
 
+  const overlay = document.getElementById("section-overlay");
+  const iframe = document.getElementById("section-frame");
+  const title = document.getElementById("section-modal-title");
+
+  // Set modal title
+  title.textContent = section.label;
+
+  // Build URL with params
   const params = new URLSearchParams({
     salesforceName: session.salesforceName,
     submissionId: session.submissionId,
   });
 
-  window.open(
-    `${section.page}?${params.toString()}`,
-    "_blank",
-    "width=680,height=760"
-  );
+  // Load section in iframe
+  iframe.src = `${section.page}?${params.toString()}`;
+
+  // Show the modal
+  overlay.classList.remove("hidden");
+  overlay.setAttribute("aria-hidden", "false");
 
   return true;
 }
 
-function finishSectionWindow(sectionId, score) {
-  markSectionComplete(sectionId, score);
+function openSectionWindow(sectionId) {
+  return loadSectionInModal(sectionId);
+}
+
+function closeSectionModal() {
+  const overlay = document.getElementById("section-overlay");
+  const iframe = document.getElementById("section-frame");
+
+  overlay.classList.add("hidden");
+  overlay.setAttribute("aria-hidden", "true");
+  iframe.src = "about:blank";
+}
+
+function finishSectionWindow(sectionId, score, data) {
+  // Check if we're in an iframe (modal context)
+  if (window.parent !== window) {
+    // Send message to parent window
+    window.parent.postMessage({
+      type: "section-complete",
+      sectionId,
+      score,
+      data
+    }, window.location.origin);
+    return;
+  }
+
+  // Standalone window mode (fallback)
+  markSectionComplete(sectionId, score, data);
 
   setTimeout(() => {
     const session = getActiveSubmission();

@@ -29,34 +29,25 @@ async function submitToBackend(payload) {
   return response.json();
 }
 
+// These functions are NO-OPs now - sections save locally only
 async function submitSectionScore({ type, submissionId, score }) {
-  return submitToBackend({
-    type,
-    submissionId,
-    score,
-  });
+  // Do nothing - data saved locally via finishSectionWindow
+  return Promise.resolve({ success: true, savedLocally: true });
 }
 
 async function submitSectionSelection({ type, submissionId, selectedValue, score }) {
-  return submitToBackend({
-    type,
-    submissionId,
-    selectedValue,
-    score,
-  });
+  // Do nothing - data saved locally via finishSectionWindow
+  return Promise.resolve({ success: true, savedLocally: true });
 }
 
 async function submitSectionValue({ type, submissionId, value }) {
-  return submitToBackend({
-    type,
-    submissionId,
-    value,
-  });
+  // Do nothing - data saved locally via finishSectionWindow
+  return Promise.resolve({ success: true, savedLocally: true });
 }
 
-async function maybeSaveFinalTally(session) {
-  if (!session || !isAssessmentComplete(session) || session.tallySaved) {
-    return;
+async function submitCompleteAssessment(session) {
+  if (!session || !isAssessmentComplete(session)) {
+    throw new Error("Assessment is not complete");
   }
 
   const totalScore =
@@ -66,21 +57,37 @@ async function maybeSaveFinalTally(session) {
   const recommendation =
     session.recommendation || getFlightPathRecommendation(totalScore);
 
-  try {
-    await submitToBackend({
-      type: "finalTally",
-      submissionId: session.submissionId,
-      totalScore,
-      recommendation: recommendation.text,
-    });
+  // Build complete payload with all data
+  const payload = {
+    type: "completeAssessment",
+    submissionId: session.submissionId,
+    intakeData: session.intakeData,
+    sections: session.sections,
+    scores: session.scores,
+    sectionData: session.sectionData || {},
+    totalScore,
+    recommendation: recommendation.text,
+    completedAt: new Date().toISOString(),
+  };
 
-    session.tallySaved = true;
-    session.totalScore = totalScore;
-    session.recommendation = recommendation;
-    setActiveSubmission(session);
-    broadcastStatusUpdate(session);
+  await submitToBackend(payload);
+
+  session.tallySaved = true;
+  session.totalScore = totalScore;
+  session.recommendation = recommendation;
+  setActiveSubmission(session);
+  broadcastStatusUpdate(session);
+}
+
+async function maybeSaveFinalTally(session) {
+  if (!session || !isAssessmentComplete(session) || session.tallySaved) {
+    return;
+  }
+
+  try {
+    await submitCompleteAssessment(session);
   } catch (error) {
-    console.error("Failed to save final tally:", error);
+    console.error("Failed to save complete assessment:", error);
   }
 }
 

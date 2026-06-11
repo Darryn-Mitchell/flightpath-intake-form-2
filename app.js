@@ -100,12 +100,8 @@ function openExecutiveEngagement({ salesforceName, submissionId }) {
     return;
   }
 
-  const params = new URLSearchParams({ salesforceName, submissionId });
-  window.open(
-    `executive-engagement.html?${params.toString()}`,
-    "_blank",
-    "width=680,height=760"
-  );
+  // Fallback - should not normally reach here
+  openSectionWindow("executiveEngagement");
 }
 
 const openBtn = document.getElementById("open-form-btn");
@@ -149,32 +145,32 @@ async function submitForm(event) {
   const submittedAt = new Date().toISOString();
   const submissionId = createSubmissionId();
   const salesforceName = form.salesforceName.value.trim();
-  const payload = {
-    salesforceName,
-    segment: form.segment.value,
-    region: form.region.value,
-    submittedAt,
-    submissionId,
-  };
 
   submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
+  submitBtn.textContent = "Starting...";
 
   try {
-    await submitToBackend(payload);
+    // Save intake data locally - don't submit to backend yet
+    createSubmissionSession({
+      submissionId,
+      salesforceName,
+      intakeData: {
+        salesforceName,
+        segment: form.segment.value,
+        region: form.region.value,
+        submittedAt,
+        submissionId,
+      },
+    });
 
-    createSubmissionSession({ submissionId, salesforceName });
     renderSectionStatus();
     openExecutiveEngagement({ salesforceName, submissionId });
     form.reset();
-    setMessage(
-      "Saved to Smartsheet! Executive Engagement opened in a new window.",
-      "success"
-    );
+    setMessage("Assessment started! Complete all sections to save.", "success");
     setTimeout(closeForm, 2000);
   } catch (error) {
     setMessage(
-      error.message || "Something went wrong while submitting. Please try again.",
+      error.message || "Something went wrong. Please try again.",
       "error"
     );
   } finally {
@@ -193,9 +189,62 @@ overlay.addEventListener("click", (event) => {
 });
 form.addEventListener("submit", submitForm);
 
+// Section modal close button
+const closeSectionBtn = document.getElementById("close-section-btn");
+const sectionOverlay = document.getElementById("section-overlay");
+
+if (closeSectionBtn) {
+  closeSectionBtn.addEventListener("click", closeSectionModal);
+}
+
+if (sectionOverlay) {
+  sectionOverlay.addEventListener("click", (event) => {
+    if (event.target === sectionOverlay) {
+      closeSectionModal();
+    }
+  });
+}
+
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !overlay.classList.contains("hidden")) {
-    closeForm();
+  if (event.key === "Escape") {
+    if (!overlay.classList.contains("hidden")) {
+      closeForm();
+    } else if (!sectionOverlay.classList.contains("hidden")) {
+      closeSectionModal();
+    }
+  }
+});
+
+// Listen for section completion messages from iframe
+window.addEventListener("message", (event) => {
+  if (event.origin !== window.location.origin) {
+    return;
+  }
+
+  if (event.data.type === "section-complete") {
+    const { sectionId, score, data } = event.data;
+
+    // Mark section complete in parent context
+    markSectionComplete(sectionId, score, data);
+
+    setTimeout(() => {
+      const session = getActiveSubmission();
+      const nextSection = SECTIONS.find(
+        (section) => section.page && !session?.sections[section.id]
+      );
+
+      if (nextSection) {
+        // Close current modal and open next section
+        closeSectionModal();
+        setTimeout(() => {
+          loadSectionInModal(nextSection.id);
+        }, 300);
+        return;
+      }
+
+      // All sections complete - close modal
+      closeSectionModal();
+    }, 1000);
   }
 });
 

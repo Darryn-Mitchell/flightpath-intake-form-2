@@ -1,9 +1,9 @@
 const SECTION_ID = "opportunitySize";
 const SECTION_TYPE = "opportunitySize";
 
-const params = new URLSearchParams(window.location.search);
-const salesforceName = params.get("salesforceName") || "";
-const submissionId = params.get("submissionId") || "";
+const params = getSectionParams();
+const salesforceName = params.salesforceName;
+const submissionId = params.submissionId;
 
 const customerNameEl = document.getElementById("customer-name");
 const form = document.getElementById("opportunity-form");
@@ -46,19 +46,18 @@ async function handleSubmit(event) {
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
-  setStatus("Saving to Google Sheets...", "");
+  setStatus("Saving locally...", "");
 
   try {
-    await submitSectionValue({
+    const sectionData = {
       type: SECTION_TYPE,
-      submissionId,
       value: formattedValue,
-    });
+    };
 
     finalValueEl.textContent = formattedValue;
     showPane("complete-pane");
     setStatus("Saved. Continuing...", "success", completeMessageEl);
-    finishSectionWindow(SECTION_ID);
+    finishSectionWindow(SECTION_ID, null, sectionData);
   } catch (error) {
     setStatus(
       error.message || "Could not save. Please try again.",

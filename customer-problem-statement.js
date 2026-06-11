@@ -8,9 +8,9 @@ const SCORES = {
 const SECTION_ID = "customerProblemStatement";
 const SECTION_TYPE = "customerProblemStatement";
 
-const params = new URLSearchParams(window.location.search);
-const salesforceName = params.get("salesforceName") || "";
-const submissionId = params.get("submissionId") || "";
+const params = getSectionParams();
+const salesforceName = params.salesforceName;
+const submissionId = params.submissionId;
 
 const customerNameEl = document.getElementById("customer-name");
 const finalScoreEl = document.getElementById("final-score");
@@ -29,27 +29,29 @@ function setStatus(text, type) {
   statusMessageEl.className = `form-message ${type}`;
 }
 
-async function finishSection(score) {
+const answers = {};
+
+async function finishSection(score, answers) {
   document.querySelectorAll(".yes-no-actions button").forEach((button) => {
     button.disabled = true;
   });
 
   finalScoreEl.textContent = String(score);
   showPane("complete-pane");
-  setStatus("Saving to Google Sheets...", "");
+  setStatus("Saving locally...", "");
 
   try {
-    await submitSectionScore({
+    const sectionData = {
       type: SECTION_TYPE,
-      submissionId,
       score,
-    });
+      answers,
+    };
 
-    setStatus("Score saved. Continuing...", "success");
-    finishSectionWindow(SECTION_ID, score);
+    setStatus("Saved. Continuing...", "success");
+    finishSectionWindow(SECTION_ID, score, sectionData);
   } catch (error) {
     setStatus(
-      error.message || "Could not save score. Please try again.",
+      error.message || "Could not save. Please try again.",
       "error"
     );
     document.querySelectorAll(".yes-no-actions button").forEach((button) => {
@@ -60,10 +62,11 @@ async function finishSection(score) {
 
 function handleAnswer(question, answer) {
   const isYes = answer === "yes";
+  answers[`question${question}`] = answer;
 
   if (question === 1) {
     if (isYes) {
-      finishSection(SCORES["1-yes"]);
+      finishSection(SCORES["1-yes"], answers);
       return;
     }
     showPane("pane-2");
@@ -72,7 +75,7 @@ function handleAnswer(question, answer) {
 
   if (question === 2) {
     if (isYes) {
-      finishSection(SCORES["2-yes"]);
+      finishSection(SCORES["2-yes"], answers);
       return;
     }
     showPane("pane-3");
@@ -80,7 +83,7 @@ function handleAnswer(question, answer) {
   }
 
   if (question === 3) {
-    finishSection(isYes ? SCORES["3-yes"] : SCORES["3-no"]);
+    finishSection(isYes ? SCORES["3-yes"] : SCORES["3-no"], answers);
   }
 }
 

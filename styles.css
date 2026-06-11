@@ -204,6 +204,16 @@ body {
   padding: 1.5rem;
 }
 
+.modal-large {
+  width: min(100%, 800px);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content {
+  margin-top: 1rem;
+}
+
 .modal-header {
   display: flex;
   align-items: center;

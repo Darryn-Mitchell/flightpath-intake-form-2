@@ -74,14 +74,37 @@ def submit_to_smartsheet(payload):
     """Submit data to Smartsheet"""
     columns = get_sheet_columns()
 
-    # Build the cells array
-    cells = [
-        {"columnId": columns.get("Timestamp"), "value": datetime.now().isoformat()},
-        {"columnId": columns.get("Submission ID"), "value": payload.get("submissionId")},
-        {"columnId": columns.get("Salesforce Name"), "value": payload.get("salesforceName")},
-        {"columnId": columns.get("Segment"), "value": payload.get("segment")},
-        {"columnId": columns.get("Region"), "value": payload.get("region")}
-    ]
+    # Handle complete assessment submission
+    if payload.get("type") == "completeAssessment":
+        intake = payload.get("intakeData", {})
+        scores = payload.get("scores", {})
+
+        # Build the cells array with all data
+        cells = [
+            {"columnId": columns.get("Timestamp"), "value": datetime.now().isoformat()},
+            {"columnId": columns.get("Submission ID"), "value": payload.get("submissionId")},
+            {"columnId": columns.get("Salesforce Name"), "value": intake.get("salesforceName")},
+            {"columnId": columns.get("Segment"), "value": intake.get("segment")},
+            {"columnId": columns.get("Region"), "value": intake.get("region")},
+            {"columnId": columns.get("Total Score"), "value": payload.get("totalScore")},
+            {"columnId": columns.get("Recommendation"), "value": payload.get("recommendation")},
+            {"columnId": columns.get("Executive Engagement"), "value": scores.get("executiveEngagement")},
+            {"columnId": columns.get("Customer Technology"), "value": scores.get("customerTechnology")},
+            {"columnId": columns.get("Customer ARR"), "value": scores.get("customerArr")},
+            {"columnId": columns.get("Delivery Execution"), "value": scores.get("deliveryExecution")},
+            {"columnId": columns.get("Customer Problem Statement"), "value": scores.get("customerProblemStatement")},
+            {"columnId": columns.get("Customer Strategic Direction"), "value": scores.get("customerStrategicDirection")},
+            {"columnId": columns.get("Executive Sponsorship"), "value": scores.get("executiveSponsorship")},
+        ]
+    else:
+        # Original intake-only submission
+        cells = [
+            {"columnId": columns.get("Timestamp"), "value": datetime.now().isoformat()},
+            {"columnId": columns.get("Submission ID"), "value": payload.get("submissionId")},
+            {"columnId": columns.get("Salesforce Name"), "value": payload.get("salesforceName")},
+            {"columnId": columns.get("Segment"), "value": payload.get("segment")},
+            {"columnId": columns.get("Region"), "value": payload.get("region")}
+        ]
 
     # Submit the row
     url = f"https://api.smartsheet.com/2.0/sheets/{SMARTSHEET_ID}/rows"
