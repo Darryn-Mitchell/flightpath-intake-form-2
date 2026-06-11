@@ -272,6 +272,17 @@ function openSectionWindow(sectionId) {
 }
 
 function closeSectionModal() {
+  // Confirm before closing if assessment is not complete
+  const session = getActiveSubmission();
+  if (session && !isAssessmentComplete(session)) {
+    const confirmed = confirm(
+      "Are you sure you want to close? Your progress in this section will be lost."
+    );
+    if (!confirmed) {
+      return; // Don't close
+    }
+  }
+
   const overlay = document.getElementById("section-overlay");
   const iframe = document.getElementById("section-frame");
 

@@ -66,6 +66,7 @@ def send_email_notification(payload):
     # Build email content
     customer_name = intake_data.get("salesforceName", "Unknown")
     segment = intake_data.get("segment", "Unknown")
+    salesforce_link = intake_data.get("salesforceLink", "")
     total_score = payload.get("totalScore", 0)
     recommendation = payload.get("recommendation", "No recommendation")
     scores = payload.get("scores", {})
@@ -97,6 +98,7 @@ def send_email_notification(payload):
             <p><strong>Customer:</strong> {customer_name}</p>
             <p><strong>Segment:</strong> {segment}</p>
             <p><strong>Region:</strong> {region}</p>
+            {f'<p><strong>Salesforce Link:</strong> <a href="{salesforce_link}">{salesforce_link}</a></p>' if salesforce_link else ''}
             <p><strong>Total Score:</strong> {total_score}</p>
 
             <div class="recommendation {'good' if total_score > 30 else 'okay' if total_score > 20 else 'not-fit'}">

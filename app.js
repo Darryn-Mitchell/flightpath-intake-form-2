@@ -178,6 +178,7 @@ async function submitForm(event) {
         salesforceName,
         segment: form.segment.value,
         region: form.region.value,
+        salesforceLink: form.salesforceLink.value.trim() || null,
         submittedAt,
         submissionId,
       },
